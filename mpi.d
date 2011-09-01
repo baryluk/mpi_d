@@ -1,9 +1,9 @@
 module mpi;
 
-enum MPI_VERSION = 1
-enum MPI_SUBVERSION = 2
+enum MPI_VERSION = 1;
+enum MPI_SUBVERSION = 2;
 
-enum {
+enum MPI_Datatype {
 	MPI_CHAR, /// char
 	MPI_BYTE, /// See standard; like unsigned char
 	MPI_SHORT, /// short
@@ -32,6 +32,17 @@ enum {
 	MPI_LB
 }
 
+/// TODO: What real types this haves? Currently this is just to silent temporarly compiler. */
+alias int MPI_Comm;
+/// ditto
+alias int MPI_Errhandler;
+/// ditto
+alias int MPI_Group;
+/// ditto
+alias int MPI_Request;
+/// ditto
+alias int MPI_Aint;
+
 /// Contains all of the processes
 extern MPI_Comm MPI_COMM_WORLD;
 /// Contains only the calling process
@@ -53,7 +64,7 @@ enum {
 take a combination operation. This operation is of type MPI_Op in C and of type INTEGER in Fortran.
 The predefined operations are 
 */
-enum {
+enum MPI_Op {
 	MPI_MAX, /// return the maximum
 	MPI_MIN, /// return the minumum
 	MPI_SUM, /// return the sum
@@ -81,16 +92,18 @@ enum {
 	MPI_CART = 1 /// Cartesian grid
 }
 
+/** TOOD
+
 MPI_SOURCE, /// Who sent the message
 MPI_TAG, /// What tag the message was sent with
 MPI_ERROR /// Any error return
+*/
 
-
-MPI_ANY_TAG = -1
-MPI_ANY_SOURCE = -1
+enum MPI_ANY_TAG = -1;
+enum MPI_ANY_SOURCE = -1;
 
 /// LAM
-enum {
+enum MPI_Status {
 	MPI_SUCCESS = 0, /// Successful return code
 	MPI_ERR_BUFFER = 1, /// Invalid buffer pointer
 	MPI_ERR_COUNT = 2, /// Invalid count argument
@@ -203,18 +216,18 @@ extern(C) int MPI_Barrier(MPI_Comm comm);
 extern(C) int MPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm);
 
 extern(C) int MPI_Gather(void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm);
-extern(C) int MPI_Gatherv(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype, int root, MPI_Comm comm)
+extern(C) int MPI_Gatherv(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype, int root, MPI_Comm comm);
 extern(C) int MPI_Scatter(void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbuf, int recvcnt, MPI_Datatype recvtype, int root,  MPI_Comm comm);
 extern(C) int MPI_Scatterv(void *sendbuf, int *sendcnts, int *displs, MPI_Datatype sendtype, void *recvbuf, int recvcnt, MPI_Datatype recvtype, int root, MPI_Comm comm);
-extern(C) int MPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm)
-extern(C) int MPI_Allgatherv(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype, MPI_Comm comm)
-extern(C) int MPI_Alltoall(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm)
-extern(C) int MPI_Alltoallv(void* sendbuf, int *sendcounts, int *sdispls, MPI_Datatype sendtype, void* recvbuf, int *recvcounts, int *rdispls, MPI_Datatype recvtype, MPI_Comm comm)
+extern(C) int MPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm);
+extern(C) int MPI_Allgatherv(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype, MPI_Comm comm);
+extern(C) int MPI_Alltoall(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm);
+extern(C) int MPI_Alltoallv(void* sendbuf, int *sendcounts, int *sdispls, MPI_Datatype sendtype, void* recvbuf, int *recvcounts, int *rdispls, MPI_Datatype recvtype, MPI_Comm comm);
 
 extern(C) int MPI_Reduce(void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm);
 
 alias extern(C) void function( void *invec, void *inoutvec, int *len, MPI_Datatype *datatype) MPI_User_function;
-extern(C) int MPI_Op_create(MPI_User_function *function, int commute, MPI_Op *op);
+extern(C) int MPI_Op_create(MPI_User_function *f, int commute, MPI_Op *op);
 
 extern(C) int MPI_Allreduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 extern(C) int MPI_Reduce_scatter(void* sendbuf, void* recvbuf, int *recvcounts, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
@@ -282,7 +295,7 @@ extern(C) int MPI_Get_processor_name(char *name, int *resultlen);
 /// 7.2. Error handling
 alias extern(C) void function(MPI_Comm *, int *, ...) MPI_Handler_function;
 
-extern(C) int MPI_Errhandler_create(MPI_Handler_function *function, MPI_Errhandler *errhandler);
+extern(C) int MPI_Errhandler_create(MPI_Handler_function *f, MPI_Errhandler *errhandler);
 extern(C) int MPI_Errhandler_set(MPI_Comm comm, MPI_Errhandler errhandler);
 extern(C) int MPI_Errhandler_get(MPI_Comm comm, MPI_Errhandler *errhandler);
 extern(C) int MPI_Errhandler_free(MPI_Errhandler *errhandler);
@@ -395,7 +408,7 @@ template D_to_MPI_Datatype(T) {
 	} else static if (is(T == float)) {
 		const D_to_MPI_Datatype = MPI_FLOAT;
 	} else static if (is(T == real)) {
-		assert(real.sizeof == 10);
+		static assert(real.sizeof == 10);
 		const D_to_MPI_Datatype = MPI_LONG_DOUBLE;
 
 	} else static if (is(T == int)) {
