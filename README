@@ -1,10 +1,21 @@
 
-MPI interface for D programming language
+MPI (Message Passing Interface) for D programming language
+
+MPI is specification, API and protocol used mainly by C and Fortran
+programms to perform communications. MPI is used mainly
+for parallel and distributed computation on multiprocessor
+and multinode clusters of computer (so called HPC - High-Performance
+Computing).
+
 
 This modules and scripts enables using MPI
 in programms written in D programming language.
 C interfaces to MPI are wrapped into templates, classes
 and few other usefull functions.
+
+Wrapper automatically performs serializations,
+deserialization, type detection, exception handling,
+struct packing for custom types, etc.
 
 Work In Progress - doesn't work yet
 
