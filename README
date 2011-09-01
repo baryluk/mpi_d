@@ -1,0 +1,13 @@
+
+MPI interface for D programming language
+
+This modules and scripts enables using MPI
+in programms written in D programming language.
+C interfaces to MPI are wrapped into templates, classes
+and few other usefull functions.
+
+Work In Progress - doesn't work yet
+
+Copyright 2009, Witold Baryluk
+
+License: BSD
